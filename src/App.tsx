@@ -12,6 +12,11 @@ import maleClothJson from "./config/male_cloth.json";
 import maleFaceJson from "./config/male_face.json";
 import maleEmojiJson from "./config/male_emoji.json";
 import maleHairJson from "./config/male_hair.json";
+import femaleHeadJson from "./config/female_head.json";
+import femaleClothJson from "./config/female_cloth.json";
+import femaleFaceJson from "./config/female_face.json";
+import femaleEmojiJson from "./config/female_emoji.json";
+import femaleHairJson from "./config/female_hair.json";
 import glassJson from "./config/glass.json";
 
 const baseUrl = 'https://raw.githubusercontent.com/IhsotasTon/ddtank-demo/master/src/assets/ddtank/'
@@ -33,8 +38,8 @@ const RealImage = function (props:{url:string}) {
 }
 const ListWrapper = styled.div`
   display:grid;
-  grid-template-columns: repeat(5,1fr);
-  grid-template-rows: repeat(4,1fr);
+  grid-template-columns: repeat(5,50px);
+  grid-template-rows: repeat(4,62.4px) 62.4px;
 `
 interface UserSelected  {
   cloth: string
@@ -61,7 +66,16 @@ const dataSum = {
     hair: maleHairJson,
     emoji: maleEmojiJson,
     glass:glassJson
-  }
+  },
+  female: {
+    head: femaleHeadJson,
+    cloth: femaleClothJson,
+    face: femaleFaceJson,
+    hair: femaleHairJson,
+    emoji: femaleEmojiJson,
+    glass:glassJson
+  },
+
 }
 export function ItemList(props: { gender: string, part: string, setUserSelected: any, userSelected: UserSelected }) {
   const { gender, part,setUserSelected,userSelected } = props;
@@ -79,7 +93,7 @@ export function ItemList(props: { gender: string, part: string, setUserSelected:
     <div>
       <ListWrapper >
         {_DATA.currentData().map((v:any) => {
-          return <img src={getRealUrl(`${part}${part==="glass"?'':'/'+gender}/${v.id}/1/show.png`)} onClick={() => {
+          return <img src={getRealUrl(`${part}${part === "glass" ? '' : '/' + gender}/${v.id}/1/show.png`)} style={{ display: 'block', width: '100%', height: '100%'}} onClick={() => {
             setUserSelected({ ...userSelected, [part]: v.id })
           }} alt={v.id}></img>
         })}
@@ -101,10 +115,12 @@ const SelectedGenderWp = styled.div`
 const SelectFemale = styled.div`
   width:50px;
   height:20px;
+  cursor:pointer;
 `
 const SelectMale = styled.div`
   width:50px;
   height:20px;
+  cursor:pointer;
 `
 const TabWrapper = styled.div`
   display:flex;
@@ -114,11 +130,12 @@ const RightWrapper = styled.div`
   flex-direction:column;
 `
 const Tab = styled.div`
-  width:500px;
+  width:50px;
   height:20px;
+  cursor:pointer;
 `
 const ExportBtn = styled.div`
-
+  cursor:pointer;
 `
 function exportCanvasAsPNG(fileName: string) {
     let className='konvajs-content'
