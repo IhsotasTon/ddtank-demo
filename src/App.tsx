@@ -1,42 +1,186 @@
-import React, { useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import './App.css';
 import styled from 'styled-components/macro'
 import { Pagination } from '@mui/material'
 import {Stage,Layer,Image} from 'react-konva'
 import useImage from 'use-image';
-import path from 'path';
+
+import usePagination from "./Pagination";
+import { default as data } from "./data.json";
+import maleHeadJson from "./config/male_head.json";
+import maleClothJson from "./config/male_cloth.json";
+import maleFaceJson from "./config/male_face.json";
+import maleEmojiJson from "./config/male_emoji.json";
+import maleHairJson from "./config/male_hair.json";
+import glassJson from "./config/glass.json";
+
 const baseUrl = 'https://raw.githubusercontent.com/IhsotasTon/ddtank-demo/master/src/assets/ddtank/'
+
 const getRealUrl = (path:string):string => {
   return decodeURI(baseUrl + path) ;
 }
-const BodyWrapper = styled.div`/Users/abc/metasoga/ddtank-demo/src/assets/ddtank/glass
+const BodyWrapper = styled.div`
   position:relative;
   width:250px;
   height:312px;
 `
+const AppWrapper = styled.div`
+  display:flex;
+`
 const RealImage = function (props:{url:string}) {
-  let [realImg] =useImage(getRealUrl(props.url))
+  let [realImg] =useImage(getRealUrl(props.url),'anonymous')
   return <Image image={realImg} width={250} height={312} x={0} y={0} />
 }
-function App() {
+const ListWrapper = styled.div`
+  display:grid;
+  grid-template-columns: repeat(5,1fr);
+  grid-template-rows: repeat(4,1fr);
+`
+interface UserSelected  {
+  cloth: string
+  head: string
+  face: string
+  emoji: string
+  glass: string
+  hair: string
+}
+let defaultUserSelected = {
+  cloth:"cloth410",
+  head:"head528",
+  face:"eff177",
+  emoji:"face130",
+  glass:"glass197",
+  hair:"hair177",
+}
+
+const dataSum = {
+  male: {
+    head: maleHeadJson,
+    cloth: maleClothJson,
+    face: maleFaceJson,
+    hair: maleHairJson,
+    emoji: maleEmojiJson,
+    glass:glassJson
+  }
+}
+export function ItemList(props: { gender: string, part: string, setUserSelected: any, userSelected: UserSelected }) {
+  const { gender, part,setUserSelected,userSelected } = props;
+  let realData = (dataSum as any)[gender][part]
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 24;
+  const count = Math.ceil(realData.length / PER_PAGE);
+  const _DATA = usePagination(realData, PER_PAGE);
+  const handleChange = (e:any, p:any) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
+  
   return (
-    <div className="App">
+    <div>
+      <ListWrapper >
+        {_DATA.currentData().map((v:any) => {
+          return <img src={getRealUrl(`${part}${part==="glass"?'':'/'+gender}/${v.id}/1/show.png`)} onClick={() => {
+            setUserSelected({ ...userSelected, [part]: v.id })
+          }} alt={v.id}></img>
+        })}
+      </ListWrapper>
+      <Pagination
+        count={count}
+        size="large"
+        page={page}
+        variant="outlined"
+        shape="rounded"
+        onChange={handleChange}
+      />
+      </div>
+  );
+}
+const SelectedGenderWp = styled.div`
+  display:flex;
+`
+const SelectFemale = styled.div`
+  width:50px;
+  height:20px;
+`
+const SelectMale = styled.div`
+  width:50px;
+  height:20px;
+`
+const TabWrapper = styled.div`
+  display:flex;
+`
+const RightWrapper = styled.div`
+  display:flex;
+  flex-direction:column;
+`
+const Tab = styled.div`
+  width:500px;
+  height:20px;
+`
+const ExportBtn = styled.div`
+
+`
+function exportCanvasAsPNG(fileName: string) {
+    let className='konvajs-content'
+    let canvasElement = document.getElementsByClassName(className)[0].children[0];
+    let MIME_TYPE = "image/png";
+    let imgURL = (canvasElement as any).toDataURL(MIME_TYPE);
+    let dlLink = document.createElement('a');
+    dlLink.download = fileName;
+    dlLink.href = imgURL;
+    dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
+    document.body.appendChild(dlLink);
+    dlLink.click();
+    document.body.removeChild(dlLink);
+}
+function App() {
+  let [userSelected, setUserSelected] = useState<UserSelected>(defaultUserSelected)
+  let [gender, setGender] = useState('male')
+  let [part, setPart] = useState('head')
+  const { head, cloth, hair, emoji, face, glass } = userSelected
+  let exportPng = useCallback(() => {
+    
+  }, [])
+  return (
+    <AppWrapper>
       <BodyWrapper>
         <Stage width={250} height={312}>
-          <Layer>
-            <RealImage url={'emoji/female/face130/1/show.png'}></RealImage>
-            <RealImage url={'face/female/eff177/1/show.png'}></RealImage>
-            <RealImage url={'glass/glass197/1/show.png'}></RealImage>
-            <RealImage url={'hair/female/hair177/1/show.png'}></RealImage>
-            <RealImage url={'head/female/head462/1/show.png'}></RealImage>
-            <RealImage url={'cloth/female/cloth410/1/show.png'}></RealImage>
+          <Layer id='1'>
+            <RealImage url={`emoji/${gender}/${emoji}/1/show.png`}></RealImage>
+            <RealImage url={`face/${gender}/${face}/1/show.png`}></RealImage>
+            <RealImage url={`glass/${glass}/1/show.png`}></RealImage>
+            <RealImage url={`hair/${gender}/${hair}/1/show.png`}></RealImage>
+            <RealImage url={`head/${gender}/${head}/1/show.png`}></RealImage>
+            <RealImage url={`cloth/${gender}/${cloth}/1/show.png`}></RealImage>
           </Layer>
         </Stage>
+        <SelectedGenderWp>
+          <SelectFemale onClick={() => {
+            setGender('female')
+          }}>female</SelectFemale>
+          <SelectMale onClick={() => {
+            setGender('male')
+          }}>male</SelectMale>
+        </SelectedGenderWp>
+        <ExportBtn onClick={() => {
+          exportCanvasAsPNG('export')
+        }}>
+          export
+          </ExportBtn>
       </BodyWrapper>
-      <Pagination
-        count={10}
-      />
-    </div>
+      <RightWrapper>
+        <TabWrapper>
+        {['cloth', 'head', 'face', 'emoji', 'glass', 'hair'].map(
+          (item,idx) => {
+            return <Tab onClick={() => {
+             setPart(item)
+           }} key={item}>{item}</Tab>
+          }
+        )}
+      </TabWrapper>
+      <ItemList setUserSelected={setUserSelected} gender={gender} part={part} userSelected={userSelected}></ItemList>
+      </RightWrapper>
+      </AppWrapper>
   );
 }
 
