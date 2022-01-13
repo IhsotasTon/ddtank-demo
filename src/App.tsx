@@ -272,8 +272,8 @@ function App() {
               <RealImage url={`cardBorder/${cardBorder}.png`} isCardbg></RealImage>
             <RealImage url={`emoji/${gender}/${emoji}/1/show.png`}></RealImage>
             <RealImage url={`face/${gender}/${face}/1/show.png`}></RealImage>
-            <RealImage url={`glass/${glass}/1/show.png`}></RealImage>
             <RealImage url={`hair/${gender}/${hair}/1/show.png`}></RealImage>
+            <RealImage url={`glass/${glass}/1/show.png`}></RealImage>
             <RealImage url={`head/${gender}/${head}/1/show.png`}></RealImage>
             <RealImage url={`cloth/${gender}/${cloth}/1/show.png`}></RealImage>
             
@@ -320,8 +320,8 @@ function App() {
                 <RealImage url={`cardBorder/${item.cardBorder}.png`} isCardbg></RealImage>
                 <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
                 <RealImage url={`face/${gender}/${item.face}/1/show.png`}></RealImage>
-                <RealImage url={`glass/${item.glass}/1/show.png`}></RealImage>
                 <RealImage url={`hair/${gender}/${item.hair}/1/show.png`}></RealImage>
+                <RealImage url={`glass/${item.glass}/1/show.png`}></RealImage>
                 <RealImage url={`head/${gender}/${item.head}/1/show.png`}></RealImage>
                 <RealImage url={`cloth/${gender}/${item.cloth}/1/show.png`}></RealImage>
               </Layer>
