@@ -18,7 +18,7 @@ import femaleFaceJson from "./config/female_face.json";
 import femaleEmojiJson from "./config/female_emoji.json";
 import femaleHairJson from "./config/female_hair.json";
 import glassJson from "./config/glass.json";
-const cardBorderJson = [{
+const cardBgJson = [{
   id:1,
 },{
   id:2,
@@ -37,7 +37,7 @@ const cardBorderJson = [{
 },{
   id:9,
   },]
-const cardBgJson = [{
+const cardBorderJson = [{
   id:1,
 },{
   id:2,
