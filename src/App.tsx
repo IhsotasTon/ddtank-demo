@@ -200,13 +200,15 @@ function App() {
     <AppWrapper>
       <BodyWrapper>
         <Stage width={250} height={312}>
-          <Layer id='1'>
+            <Layer id='1'>
             <RealImage url={`cardBg/1.png`}></RealImage>
+            <RealImage url={`emoji/${gender}/${emoji}/1/show.png`}></RealImage>
             <RealImage url={`face/${gender}/${face}/1/show.png`}></RealImage>
             <RealImage url={`glass/${glass}/1/show.png`}></RealImage>
             <RealImage url={`hair/${gender}/${hair}/1/show.png`}></RealImage>
             <RealImage url={`head/${gender}/${head}/1/show.png`}></RealImage>
             <RealImage url={`cloth/${gender}/${cloth}/1/show.png`}></RealImage>
+            <RealImage url={`cardBorder/1.png`}></RealImage>
           </Layer>
         </Stage>
         <SelectedGenderWp>
