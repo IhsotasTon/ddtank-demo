@@ -1,8 +1,8 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import './App.css';
 import styled from 'styled-components/macro'
-import { Pagination } from '@mui/material'
-import {Stage,Layer,Image} from 'react-konva'
+import { Pagination,TextField } from '@mui/material'
+import {Stage,Layer,Image,Text} from 'react-konva'
 import useImage from 'use-image';
 
 import usePagination from "./Pagination";
@@ -150,20 +150,58 @@ function exportCanvasAsPNG(fileName: string) {
     dlLink.click();
     document.body.removeChild(dlLink);
 }
+function randFrom0ToN(n: number):number {
+ return Math.floor(Math.random()*Math.floor(n));
+}
+function randomHeros(gender: string, number: number): any[] {
+  let rtArr = [];
+  if (gender === 'female') {
+      for (let i = 0; i < number; i++) {
+      rtArr.push({
+        emoji: femaleEmojiJson[randFrom0ToN(femaleEmojiJson.length)].id,
+        face: femaleFaceJson[randFrom0ToN(femaleFaceJson.length)].id,
+        glass: glassJson[randFrom0ToN(glassJson.length)].id,
+        hair: femaleHairJson[randFrom0ToN(femaleHairJson.length)].id,
+        head: femaleHeadJson[randFrom0ToN(femaleHeadJson.length)].id,
+        cloth: femaleClothJson[randFrom0ToN(femaleClothJson.length)].id
+      })
+    }
+      
+  } else {
+    for (let i = 0; i < number; i++) {
+      rtArr.push({
+        emoji: maleEmojiJson[randFrom0ToN(maleEmojiJson.length)].id,
+        face: maleFaceJson[randFrom0ToN(maleFaceJson.length)].id,
+        glass: glassJson[randFrom0ToN(glassJson.length)].id,
+        hair: maleHairJson[randFrom0ToN(maleHairJson.length)].id,
+        head: maleHeadJson[randFrom0ToN(maleHeadJson.length)].id,
+        cloth: maleClothJson[randFrom0ToN(maleClothJson.length)].id
+      })
+    }
+  }
+  return rtArr;
+  
+
+}
 function App() {
   let [userSelected, setUserSelected] = useState<UserSelected>(defaultUserSelected)
   let [gender, setGender] = useState('male')
   let [part, setPart] = useState('head')
-  const { head, cloth, hair, emoji, face, glass } = userSelected
-  let exportPng = useCallback(() => {
+  let randomInput = useRef(null)
+  let [randomArr,setRandomArr]=useState<UserSelected[]>()
+  let handleRandom = useCallback(() => {
+    setRandomArr(randomHeros(gender,(randomInput.current as any).value))
     
-  }, [])
+  },[gender])
+  
+  const { head, cloth, hair, emoji, face, glass } = userSelected
   return (
+    <div>
     <AppWrapper>
       <BodyWrapper>
         <Stage width={250} height={312}>
           <Layer id='1'>
-            <RealImage url={`emoji/${gender}/${emoji}/1/show.png`}></RealImage>
+            <RealImage url={`cardBg/1.png`}></RealImage>
             <RealImage url={`face/${gender}/${face}/1/show.png`}></RealImage>
             <RealImage url={`glass/${glass}/1/show.png`}></RealImage>
             <RealImage url={`hair/${gender}/${hair}/1/show.png`}></RealImage>
@@ -183,7 +221,11 @@ function App() {
           exportCanvasAsPNG('export')
         }}>
           export
-          </ExportBtn>
+        </ExportBtn>
+        <input ref={randomInput} type={'number'}></input>
+        <button onClick={() => {
+          handleRandom()
+        }}>random</button>
       </BodyWrapper>
       <RightWrapper>
         <TabWrapper>
@@ -198,6 +240,26 @@ function App() {
       <ItemList setUserSelected={setUserSelected} gender={gender} part={part} userSelected={userSelected}></ItemList>
       </RightWrapper>
       </AppWrapper>
+      <br></br>
+    <div style={{display:'flex',width:'100%',flexFlow: 'wrap'}}>
+        {randomArr?.map((item) =>
+          <div style={{ display:'flex',flexDirection:'column'}}>
+            <Stage width={250} height={312}>
+              <Layer id={item.emoji}>
+                <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
+                <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
+                <RealImage url={`face/${gender}/${item.face}/1/show.png`}></RealImage>
+                <RealImage url={`glass/${item.glass}/1/show.png`}></RealImage>
+                <RealImage url={`hair/${gender}/${item.hair}/1/show.png`}></RealImage>
+                <RealImage url={`head/${gender}/${item.head}/1/show.png`}></RealImage>
+                  <RealImage url={`cloth/${gender}/${item.cloth}/1/show.png`}></RealImage>
+              </Layer>
+            </Stage>
+            <div>{`${item.cloth}_${item.face}_${item.glass}_${item.hair}_${item.head}_${item.emoji}|`}</div>
+          </div>
+        )}
+      </div>
+</div>
   );
 }
 
