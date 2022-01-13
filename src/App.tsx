@@ -228,7 +228,7 @@ function randomHeros(gender: string, number: number): any[] {
         head: femaleHeadJson[randFrom0ToN(femaleHeadJson.length)].id,
         cloth: femaleClothJson[randFrom0ToN(femaleClothJson.length)].id,
         cardBg: cardBgJson[randFrom0ToN(cardBgJson.length)].id,
-        cardBorderJson: cardBorderJson[randFrom0ToN(cardBorderJson.length)].id
+        cardBorder: cardBorderJson[randFrom0ToN(cardBorderJson.length)].id
       })
     }
       
@@ -242,7 +242,7 @@ function randomHeros(gender: string, number: number): any[] {
         head: maleHeadJson[randFrom0ToN(maleHeadJson.length)].id,
         cloth: maleClothJson[randFrom0ToN(maleClothJson.length)].id,
         cardBg: cardBgJson[randFrom0ToN(cardBgJson.length)].id,
-        cardBorderJson: cardBorderJson[randFrom0ToN(cardBorderJson.length)].id
+        cardBorder: cardBorderJson[randFrom0ToN(cardBorderJson.length)].id
       })
     }
   }
@@ -268,14 +268,15 @@ function App() {
       <BodyWrapper>
         <Stage width={250} height={312}>
             <Layer id='1'>
-            <RealImage url={`cardBg/${cardBg}.png`} isCardbg></RealImage>
+              <RealImage url={`cardBg/${cardBg}.png`} isCardbg></RealImage>
+              <RealImage url={`cardBorder/${cardBorder}.png`} isCardbg></RealImage>
             <RealImage url={`emoji/${gender}/${emoji}/1/show.png`}></RealImage>
             <RealImage url={`face/${gender}/${face}/1/show.png`}></RealImage>
             <RealImage url={`glass/${glass}/1/show.png`}></RealImage>
             <RealImage url={`hair/${gender}/${hair}/1/show.png`}></RealImage>
             <RealImage url={`head/${gender}/${head}/1/show.png`}></RealImage>
             <RealImage url={`cloth/${gender}/${cloth}/1/show.png`}></RealImage>
-            <RealImage url={`cardBorder/${cardBorder}.png`} isCardbg></RealImage>
+            
           </Layer>
         </Stage>
         <SelectedGenderWp>
@@ -316,14 +317,13 @@ function App() {
             <Stage width={250} height={312}>
               <Layer id={item.emoji}>
                 <RealImage url={`cardBg/${item.cardBg}.png`} isCardbg></RealImage>
-                <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
+                <RealImage url={`cardBorder/${item.cardBorder}.png`} isCardbg></RealImage>
                 <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
                 <RealImage url={`face/${gender}/${item.face}/1/show.png`}></RealImage>
                 <RealImage url={`glass/${item.glass}/1/show.png`}></RealImage>
                 <RealImage url={`hair/${gender}/${item.hair}/1/show.png`}></RealImage>
                 <RealImage url={`head/${gender}/${item.head}/1/show.png`}></RealImage>
                 <RealImage url={`cloth/${gender}/${item.cloth}/1/show.png`}></RealImage>
-                <RealImage url={`cardBorder/${item.cardBorder}.png`} isCardbg></RealImage>
               </Layer>
             </Stage>
             <div>{`${item.cloth}_${item.face}_${item.glass}_${item.hair}_${item.head}_${item.emoji}|`}</div>
