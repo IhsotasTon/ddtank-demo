@@ -18,6 +18,7 @@ import femaleFaceJson from "./config/female_face.json";
 import femaleEmojiJson from "./config/female_emoji.json";
 import femaleHairJson from "./config/female_hair.json";
 import glassJson from "./config/glass.json";
+import RichEditer from './components/richEditer';
 const cardBgJson = [{
   id:1,
 },{
@@ -309,7 +310,8 @@ function App() {
         )}
       </TabWrapper>
       <ItemList setUserSelected={setUserSelected} gender={gender} part={part} userSelected={userSelected}></ItemList>
-      </RightWrapper>
+        </RightWrapper>
+        <RichEditer></RichEditer>
       </AppWrapper>
       <br></br>
     <div style={{display:'flex',width:'100%',flexFlow: 'wrap'}}>
@@ -322,10 +324,9 @@ function App() {
                 <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
                 <RealImage url={`face/${gender}/${item.face}/1/show.png`}></RealImage>
                 <RealImage url={`hair/${gender}/${item.hair}/1/show.png`}></RealImage>
-                       <RealImage url={`cloth/${gender}/${item.cloth}/1/show.png`}></RealImage>
+                <RealImage url={`cloth/${gender}/${item.cloth}/1/show.png`}></RealImage>
                 <RealImage url={`glass/${item.glass}/1/show.png`}></RealImage>
                 <RealImage url={`head/${gender}/${item.head}/1/show.png`}></RealImage>
-         
               </Layer>
             </Stage>
             <div>{`${item.cloth}_${item.face}_${item.glass}_${item.hair}_${item.head}_${item.emoji}|`}</div>
