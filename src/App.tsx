@@ -275,7 +275,7 @@ const RealImageShenqu = function (props:{url:string,isCardbg?:boolean,job:string
   let [realImg] = useImage(getRealUrl("shenqu/"+props.url), 'anonymous')
   let width = props.isCardbg ? 270 : 270;
   let height = props.isCardbg ? 406 : 406;
-  let x = props.job?.indexOf('warrior')!==-1&&props.isWing ? 50:0;
+  let x = props.job?.indexOf('warrior')!==-1&&props.isWing ? 55:0;
   let y = props.isCardbg ? 0 : 0;
   if (!props.job) {
     x=0
@@ -454,7 +454,7 @@ function App() {
           handleRandomShenqu()
         }}>random</button>
       </ShenquWrapper>
-      <RightWrapper style={{marginLeft:"100px"}}>
+      <RightWrapper style={{marginLeft:"120px"}}>
         <TabWrapper>
         {['wing', 'weapon', 'body', 'hair'].map(
           (item,idx) => {
