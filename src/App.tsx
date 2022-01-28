@@ -280,7 +280,7 @@ const RealImageShenqu = function (props:{url:string,isCardbg?:boolean,job:string
   if (!props.job) {
     x=0
   }
-  return <Image image={realImg} width={width} height={height} x={x} y={y} />
+  return <Image image={realImg} width={width} height={!props.isWing?height:0} x={x} y={y} />
 }
 const options = [
   { value: 'male-warrior', label: 'male-warrior' },
@@ -502,7 +502,7 @@ function App() {
           <div style={{display:'flex',width:'100%',flexFlow: 'wrap',marginTop:"100px"}}>
         {randomArr?.map((item) =>
           <div style={{ display:'flex',flexDirection:'column'}}>
-            <Stage width={400} height={406}>
+            <Stage width={250} height={312}>
               <Layer id={item.emoji}>
                 <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
                 <RealImage url={`hair/${gender}/${item.hair}/1/show.png`}></RealImage>
@@ -517,7 +517,7 @@ function App() {
         )}
         {randomArrShenqu?.map((item,id) =>
           <div style={{ display:'flex',flexDirection:'column'}}>
-            <Stage width={270} height={312}>
+            <Stage width={400} height={406}>
               <Layer id={item.job+id}>
                 <RealImageShenqu url={`${item.job}/${item.wing}/wing.png`} job={item.job} isWing={true}></RealImageShenqu>
                 <RealImageShenqu url={`${item.job}/${item.weapon}/weapon.png`} job={item.job}></RealImageShenqu>
