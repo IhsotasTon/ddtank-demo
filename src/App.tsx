@@ -272,11 +272,12 @@ function randomHeros(gender: string, number: number): any[] {
 
 //神曲
 const RealImageShenqu = function (props:{url:string,isCardbg?:boolean,job:string|undefined,isWing?:boolean}) {
-  let [realImg] = useImage(getRealUrl("shenqu/"+props.url), 'anonymous')
-  let width = props.isCardbg ? 300 : 300;
-  let height = props.isCardbg ? 400 : 400;
-  let x = props.job?.indexOf('warrior')!==-1&&props.isWing ? 55:0;
-  let y = props.job?.indexOf('warrior')!==-1&&props.isWing ? -30 : 0;
+  let [realImg] = useImage(getRealUrl("shenqu/" + props.url), 'anonymous')
+  const isWarrior=props.job?.indexOf('warrior')!==-1
+  let width = isWarrior ? 270 : 300;
+  let height = isWarrior ? 406 : 400;
+  let x = isWarrior&&props.isWing ? 55:0;
+  let y = isWarrior&&props.isWing ? 0 : 0;
   if (!props.job) {
     x=0
   }
