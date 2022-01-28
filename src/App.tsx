@@ -51,7 +51,7 @@ const cardBorderJson = [{
 },{
   id:6,
 }]
-const baseUrl = 'https://raw.githubusercontent.com/IhsotasTon/ddtank-demo/master/src/assets/ddtank/'
+const baseUrl = 'https://raw.githubusercontent.com/IhsotasTon/ddtank-demo/master/src/assets/'
 
 const getRealUrl = (path:string):string => {
   return decodeURI(baseUrl + path) ;
@@ -65,7 +65,7 @@ const AppWrapper = styled.div`
   display:flex;
 `
 const RealImage = function (props:{url:string,isCardbg?:boolean}) {
-  let [realImg] = useImage(getRealUrl(props.url), 'anonymous')
+  let [realImg] = useImage(getRealUrl('ddtank/'+props.url), 'anonymous')
   let width = props.isCardbg ? 250 : 250;
   let height = props.isCardbg ? 312 : 312;
   let x = props.isCardbg ? 0 :15;
@@ -157,7 +157,7 @@ export function ItemList(props: { gender: string, part: string, setUserSelected:
     <div>
       <ListWrapper >
         {_DATA.currentData().map((v:any) => {
-          return <img src={getRealUrl(getUrl(part,gender,v))} style={{ display: 'block', width: '100%', height: '100%'}} onClick={() => {
+          return <img src={getRealUrl("ddtank/"+getUrl(part,gender,v))} style={{ display: 'block', width: '100%', height: '100%'}} onClick={() => {
             setUserSelected({ ...userSelected, [part]: v.id })
           }} alt={v.id}></img>
         })}
@@ -251,6 +251,18 @@ function randomHeros(gender: string, number: number): any[] {
   
 
 }
+
+
+
+//神曲
+const RealImageShenqu = function (props:{url:string,isCardbg?:boolean}) {
+  let [realImg] = useImage(getRealUrl("shenqu/"+props.url), 'anonymous')
+  let width = props.isCardbg ? 270 : 270;
+  let height = props.isCardbg ? 406 : 406;
+  let x = props.isCardbg ? 0 :0;
+  let y=props.isCardbg ? 0 : 0;
+  return <Image image={realImg} width={width} height={height} x={x} y={y} />
+}
 function App() {
   let [userSelected, setUserSelected] = useState<UserSelected>(defaultUserSelected)
   let [gender, setGender] = useState('male')
@@ -272,9 +284,10 @@ function App() {
               <RealImage url={`cardBg/${cardBg}.png`} isCardbg></RealImage>
               <RealImage url={`cardBorder/${cardBorder}.png`} isCardbg></RealImage>
             <RealImage url={`emoji/${gender}/${emoji}/1/show.png`}></RealImage>
-            <RealImage url={`face/${gender}/${face}/1/show.png`}></RealImage>
+            
             <RealImage url={`hair/${gender}/${hair}/1/show.png`}></RealImage>
-            <RealImage url={`cloth/${gender}/${cloth}/1/show.png`}></RealImage>
+              <RealImage url={`cloth/${gender}/${cloth}/1/show.png`}></RealImage>
+              <RealImage url={`face/${gender}/${face}/1/show.png`}></RealImage>
             <RealImage url={`glass/${glass}/1/show.png`}></RealImage>
             <RealImage url={`head/${gender}/${head}/1/show.png`}></RealImage>
   
@@ -313,7 +326,50 @@ function App() {
         </RightWrapper>
         <RichEditer></RichEditer>
       </AppWrapper>
-      <br></br>
+  {/* shenqu */}
+    <AppWrapper>
+      <BodyWrapper>
+        <Stage width={270} height={406}>
+            <Layer id='1'>
+            <RealImageShenqu url={`male-mage/astronaut/wing.png`}></RealImageShenqu>
+            
+            <RealImageShenqu url={`male-mage/astronaut/body.png`}></RealImageShenqu>
+              <RealImageShenqu url={`male-mage/astronaut/hair.png`}></RealImageShenqu>
+              <RealImageShenqu url={`male-mage/astronaut/weapon.png`}></RealImageShenqu>      
+          </Layer>
+        </Stage>
+        <SelectedGenderWp>
+          <SelectFemale onClick={() => {
+            setGender('female')
+          }}>female</SelectFemale>
+          <SelectMale onClick={() => {
+            setGender('male')
+          }}>male</SelectMale>
+        </SelectedGenderWp>
+        <ExportBtn onClick={() => {
+          exportCanvasAsPNG('export')
+        }}>
+          export
+        </ExportBtn>
+        <input ref={randomInput} type={'number'}></input>
+        <button onClick={() => {
+          handleRandom()
+        }}>random</button>
+      </BodyWrapper>
+      <RightWrapper>
+        <TabWrapper>
+        {['cloth', 'head', 'face', 'emoji', 'glass', 'hair','cardBg','cardBorder'].map(
+          (item,idx) => {
+            return <Tab onClick={() => {
+             setPart(item)
+           }} key={item}>{item}</Tab>
+          }
+        )}
+      </TabWrapper>
+      <ItemList setUserSelected={setUserSelected} gender={gender} part={part} userSelected={userSelected}></ItemList>
+        </RightWrapper>
+        <RichEditer></RichEditer>
+      </AppWrapper>
     <div style={{display:'flex',width:'100%',flexFlow: 'wrap'}}>
         {randomArr?.map((item) =>
           <div style={{ display:'flex',flexDirection:'column'}}>
@@ -322,9 +378,10 @@ function App() {
                 <RealImage url={`cardBg/${item.cardBg}.png`} isCardbg></RealImage>
                 <RealImage url={`cardBorder/${item.cardBorder}.png`} isCardbg></RealImage>
                 <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
-                <RealImage url={`face/${gender}/${item.face}/1/show.png`}></RealImage>
+                
                 <RealImage url={`hair/${gender}/${item.hair}/1/show.png`}></RealImage>
                 <RealImage url={`cloth/${gender}/${item.cloth}/1/show.png`}></RealImage>
+                <RealImage url={`face/${gender}/${item.face}/1/show.png`}></RealImage>
                 <RealImage url={`glass/${item.glass}/1/show.png`}></RealImage>
                 <RealImage url={`head/${gender}/${item.head}/1/show.png`}></RealImage>
               </Layer>
