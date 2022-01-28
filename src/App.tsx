@@ -280,13 +280,13 @@ const RealImageShenqu = function (props:{url:string,isCardbg?:boolean,job:string
   if (!props.job) {
     x=0
   }
-  return <Image image={realImg} width={width} height={!props.isWing?height:0} x={x} y={y} />
+  return <Image image={realImg} width={width} height={height} x={x} y={y} />
 }
 const options = [
   { value: 'male-warrior', label: 'male-warrior' },
   { value: 'male-mage', label: 'male-mage' },
   { value: 'male-archer', label: 'male-archer' },
-  { value: 'female-warrior', label: 'female-warrior' }
+  // { value: 'female-warrior', label: 'female-warrior' }
 ]
 interface ItemJson {
   wing: string
@@ -332,13 +332,11 @@ const JobsJson = [
   'male-warrior',
   'male-mage',
   'male-archer',
-  'female-warrior'
 ]
 function randomShenqu(num:number) :any[]{
   let arr = [];
   for (let i = 0; i < num; i++) {
-    let randomJob = randFrom0ToN(4)
-    console.log(randomJob)
+    let randomJob = randFrom0ToN(3)
     let job = JobsJson[randomJob];
     let wing = (shenquJson as any)[job][randFrom0ToN((shenquJson as any)[job].length)].name
     let hair = (shenquJson as any)[job][randFrom0ToN((shenquJson as any)[job].length)].name
@@ -407,7 +405,7 @@ function App() {
           <div>
             hasBg?
             <input type="radio" name="" value="0" checked={hasBg} onChange={(e) => {setHasBg(true)}} /><label htmlFor="yes">Yes</label>
-            <input type="radio" name="" value="1" checked={!hasBg} onChange={(e) => { setHasBg(false) }} /><label htmlFor="no">No</label>
+            <input type="radio" name="" value="1" checked={!hasBg} onChange={(e) => {setHasBg(false) }} /><label htmlFor="no">No</label>
           </div>
         <input ref={randomInput} type={'number'}></input>
         <button onClick={() => {
@@ -517,7 +515,7 @@ function App() {
         )}
         {randomArrShenqu?.map((item,id) =>
           <div style={{ display:'flex',flexDirection:'column'}}>
-            <Stage width={400} height={406}>
+            <Stage width={400} height={400}>
               <Layer id={item.job+id}>
                 <RealImageShenqu url={`${item.job}/${item.wing}/wing.png`} job={item.job} isWing={true}></RealImageShenqu>
                 <RealImageShenqu url={`${item.job}/${item.weapon}/weapon.png`} job={item.job}></RealImageShenqu>
