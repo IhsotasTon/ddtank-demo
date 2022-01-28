@@ -357,7 +357,6 @@ function App() {
   let handleRandom = useCallback(() => {
     setRandomArr(randomHeros(gender,(randomInput.current as any).value))
   },[gender])
-  
   const { head, cloth, hair, emoji, face, glass, cardBg, cardBorder } = userSelected
   const [hasBg, setHasBg] = useState(false)
   //shenqu
@@ -368,6 +367,7 @@ function App() {
     body:'tree-sprite',
     hair: 'tree-sprite',
   })
+  let [nameOptions,setNameOptions]=useState()
   let [shenquPart, setShenquPart] = useState('wing')
   let randomInputShenqu = useRef(null)
   let [randomArrShenqu,setRandomArrShenqu]=useState<any[]>()
@@ -442,7 +442,18 @@ function App() {
         <SelectedGenderWp>
             <Select className={'select'} options={options} onChange={(e) => {
               setJob(e?.value)
+              if (e) {
+                setNameOptions((shenquJson as any)[e.value].map((item: { name: any; label: any; }) => {
+                  return { value: item.name, label: item.name }
+                }))
+              }
             }} placeholder="male-mage" />
+            <Select className={'select'} options={nameOptions} onChange={(e:any) => {
+              if (e) {
+                let v=e.value
+                setItemJson({wing:v,body:v,hair:v,weapon:v})
+              }
+            }} placeholder="male-mage-christmas" />
         </SelectedGenderWp>
         <ExportBtn onClick={() => {
           exportCanvasAsPNG('export')
@@ -494,7 +505,6 @@ function App() {
             <Stage width={400} height={406}>
               <Layer id={item.emoji}>
                 <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
-                
                 <RealImage url={`hair/${gender}/${item.hair}/1/show.png`}></RealImage>
                 <RealImage url={`cloth/${gender}/${item.cloth}/1/show.png`}></RealImage>
                 <RealImage url={`face/${gender}/${item.face}/1/show.png`}></RealImage>
