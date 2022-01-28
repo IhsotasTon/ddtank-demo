@@ -273,10 +273,10 @@ function randomHeros(gender: string, number: number): any[] {
 //神曲
 const RealImageShenqu = function (props:{url:string,isCardbg?:boolean,job:string|undefined,isWing?:boolean}) {
   let [realImg] = useImage(getRealUrl("shenqu/"+props.url), 'anonymous')
-  let width = props.isCardbg ? 270 : 270;
-  let height = props.isCardbg ? 406 : 406;
+  let width = props.isCardbg ? 300 : 300;
+  let height = props.isCardbg ? 400 : 400;
   let x = props.job?.indexOf('warrior')!==-1&&props.isWing ? 55:0;
-  let y = props.isCardbg ? 0 : 0;
+  let y = props.job?.indexOf('warrior')!==-1&&props.isWing ? -30 : 0;
   if (!props.job) {
     x=0
   }
@@ -432,8 +432,9 @@ function App() {
         <Stage width={400} height={406}>
             <Layer id='1'>
             <RealImageShenqu url={`${job}/${itemJson.wing}/wing.png`} job={job} isWing={true}></RealImageShenqu>
-            <RealImageShenqu url={`${job}/${itemJson.weapon}/weapon.png`} job={job}></RealImageShenqu>
+           {job!=='male-archer'&&<RealImageShenqu url={`${job}/${itemJson.weapon}/weapon.png`} job={job}></RealImageShenqu>}
               <RealImageShenqu url={`${job}/${itemJson.body}/body.png`} job={job}></RealImageShenqu>
+              {job==='male-archer'&&<RealImageShenqu url={`${job}/${itemJson.weapon}/weapon.png`} job={job}></RealImageShenqu>}
               <RealImageShenqu url={`${job}/${itemJson.hair}/hair.png`} job={job}></RealImageShenqu>   
           </Layer>
         </Stage>
@@ -518,8 +519,9 @@ function App() {
             <Stage width={400} height={400}>
               <Layer id={item.job+id}>
                 <RealImageShenqu url={`${item.job}/${item.wing}/wing.png`} job={item.job} isWing={true}></RealImageShenqu>
-                <RealImageShenqu url={`${item.job}/${item.weapon}/weapon.png`} job={item.job}></RealImageShenqu>
+               {item.job!=='male-archer'&&<RealImageShenqu url={`${item.job}/${item.weapon}/weapon.png`} job={item.job}></RealImageShenqu>} 
                 <RealImageShenqu url={`${item.job}/${item.body}/body.png`} job={item.job}></RealImageShenqu>
+                {item.job==='male-archer'&&<RealImageShenqu url={`${item.job}/${item.weapon}/weapon.png`} job={item.job}></RealImageShenqu>} 
                 <RealImageShenqu url={`${item.job}/${item.hair}/hair.png`} job={item.job}></RealImageShenqu>   
               </Layer>
             </Stage>
