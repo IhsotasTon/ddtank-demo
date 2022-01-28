@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import { Pagination,TextField } from '@mui/material'
 import {Stage,Layer,Image,Text} from 'react-konva'
 import useImage from 'use-image';
-
+import Select from "react-select"
 import usePagination from "./Pagination";
 import { default as data } from "./data.json";
 import maleHeadJson from "./config/male_head.json";
@@ -19,6 +19,11 @@ import femaleEmojiJson from "./config/female_emoji.json";
 import femaleHairJson from "./config/female_hair.json";
 import glassJson from "./config/glass.json";
 import RichEditer from './components/richEditer';
+import maleWarriorJson from "./config/shenqu/male-warrior.json";
+import maleMageJson from "./config/shenqu/male-mage.json";
+import maleArcherJson from "./config/shenqu/male-archer.json";
+import femaleWarriorJson from "./config/shenqu/female-warrior.json";
+
 const cardBgJson = [{
   id:1,
 },{
@@ -50,7 +55,13 @@ const cardBorderJson = [{
   id:5,
 },{
   id:6,
-}]
+  }]
+const shenquJson = {
+  'male-warrior': maleWarriorJson,
+  'male-mage': maleMageJson,
+  'male-archer': maleArcherJson,
+  'female-warrior':femaleWarriorJson
+}
 const baseUrl = 'https://raw.githubusercontent.com/IhsotasTon/ddtank-demo/master/src/assets/'
 
 const getRealUrl = (path:string):string => {
@@ -60,6 +71,11 @@ const BodyWrapper = styled.div`
   position:relative;
   width:250px;
   height:312px;
+`
+const ShenquWrapper = styled.div`
+  position:relative;
+  width:270px;
+  height:406px;
 `
 const AppWrapper = styled.div`
   display:flex;
@@ -255,13 +271,82 @@ function randomHeros(gender: string, number: number): any[] {
 
 
 //神曲
-const RealImageShenqu = function (props:{url:string,isCardbg?:boolean}) {
+const RealImageShenqu = function (props:{url:string,isCardbg?:boolean,job:string|undefined,isWing?:boolean}) {
   let [realImg] = useImage(getRealUrl("shenqu/"+props.url), 'anonymous')
   let width = props.isCardbg ? 270 : 270;
   let height = props.isCardbg ? 406 : 406;
-  let x = props.isCardbg ? 0 :0;
-  let y=props.isCardbg ? 0 : 0;
+  let x = props.job?.indexOf('warrior')!==-1&&props.isWing ? 50:0;
+  let y = props.isCardbg ? 0 : 0;
+  if (!props.job) {
+    x=0
+  }
   return <Image image={realImg} width={width} height={height} x={x} y={y} />
+}
+const options = [
+  { value: 'male-warrior', label: 'male-warrior' },
+  { value: 'male-mage', label: 'male-mage' },
+  { value: 'male-archer', label: 'male-archer' },
+  { value: 'female-warrior', label: 'female-warrior' }
+]
+interface ItemJson {
+  wing: string
+  weapon: string
+    body:string
+  hair: string
+
+}
+export function ItemListShenqu(props: { job: string|undefined, part: string, setUserSelected: any, userSelected: ItemJson }) {
+  const { job, part, setUserSelected, userSelected } = props;
+  let realData;
+  realData=(shenquJson as any)[job||'male-mage']
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 24;
+  const count = Math.ceil(realData.length / PER_PAGE);
+  const _DATA = usePagination(realData, PER_PAGE);
+  const handleChange = (e:any, p:any) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
+  
+  return (
+    <div>
+      <ListWrapper >
+        {_DATA.currentData().map((v:any) => {
+          return <img src={getRealUrl(`shenqu/${job}/${v.name}/${part}.png`)} style={{ display: 'block', width: '100%', height: '100%'}} onClick={() => {
+            setUserSelected({ ...userSelected, [part]: v.name })
+          }} alt={v.id}></img>
+        })}
+      </ListWrapper>
+      <Pagination
+        count={count}
+        size="large"
+        page={page}
+        variant="outlined"
+        shape="rounded"
+        onChange={handleChange}
+      />
+      </div>
+  );
+}
+const JobsJson = [
+  'male-warrior',
+  'male-mage',
+  'male-archer',
+  'female-warrior'
+]
+function randomShenqu(num:number) :any[]{
+  let arr = [];
+  for (let i = 0; i < num; i++) {
+    let randomJob = randFrom0ToN(4)
+    console.log(randomJob)
+    let job = JobsJson[randomJob];
+    let wing = (shenquJson as any)[job][randFrom0ToN((shenquJson as any)[job].length)].name
+    let hair = (shenquJson as any)[job][randFrom0ToN((shenquJson as any)[job].length)].name
+    let body = (shenquJson as any)[job][randFrom0ToN((shenquJson as any)[job].length)].name
+    let weapon=(shenquJson as any)[job][randFrom0ToN((shenquJson as any)[job].length)].name
+   arr.push({job,wing,hair,body,weapon})
+  }
+  return arr
 }
 function App() {
   let [userSelected, setUserSelected] = useState<UserSelected>(defaultUserSelected)
@@ -271,10 +356,24 @@ function App() {
   let [randomArr,setRandomArr]=useState<UserSelected[]>()
   let handleRandom = useCallback(() => {
     setRandomArr(randomHeros(gender,(randomInput.current as any).value))
-    
   },[gender])
   
-  const { head, cloth, hair, emoji, face, glass,cardBg,cardBorder } = userSelected
+  const { head, cloth, hair, emoji, face, glass, cardBg, cardBorder } = userSelected
+  const [hasBg, setHasBg] = useState(false)
+  //shenqu
+  const [job, setJob] = useState<string | undefined>('male-mage')
+  const [itemJson, setItemJson] = useState<ItemJson>({
+    wing: 'tree-sprite',
+    weapon: 'tree-sprite',
+    body:'tree-sprite',
+    hair: 'tree-sprite',
+  })
+  let [shenquPart, setShenquPart] = useState('wing')
+  let randomInputShenqu = useRef(null)
+  let [randomArrShenqu,setRandomArrShenqu]=useState<any[]>()
+  let handleRandomShenqu = useCallback(() => {
+    setRandomArrShenqu(randomShenqu((randomInputShenqu.current as any).value))
+  },[])
   return (
     <div>
     <AppWrapper>
@@ -289,9 +388,7 @@ function App() {
               <RealImage url={`cloth/${gender}/${cloth}/1/show.png`}></RealImage>
               <RealImage url={`face/${gender}/${face}/1/show.png`}></RealImage>
             <RealImage url={`glass/${glass}/1/show.png`}></RealImage>
-            <RealImage url={`head/${gender}/${head}/1/show.png`}></RealImage>
-  
-            
+            <RealImage url={`head/${gender}/${head}/1/show.png`}></RealImage>            
           </Layer>
         </Stage>
         <SelectedGenderWp>
@@ -306,10 +403,15 @@ function App() {
           exportCanvasAsPNG('export')
         }}>
           export
-        </ExportBtn>
+          </ExportBtn>
+          <div>
+            hasBg?
+            <input type="radio" name="" value="0" checked={hasBg} onChange={(e) => {setHasBg(true)}} /><label htmlFor="yes">Yes</label>
+            <input type="radio" name="" value="1" checked={!hasBg} onChange={(e) => { setHasBg(false) }} /><label htmlFor="no">No</label>
+          </div>
         <input ref={randomInput} type={'number'}></input>
         <button onClick={() => {
-          handleRandom()
+            handleRandom()
         }}>random</button>
       </BodyWrapper>
       <RightWrapper>
@@ -327,56 +429,52 @@ function App() {
         <RichEditer></RichEditer>
       </AppWrapper>
   {/* shenqu */}
-    <AppWrapper>
-      <BodyWrapper>
-        <Stage width={270} height={406}>
+    <AppWrapper style={{marginTop:"100px"}}>
+      <ShenquWrapper>
+        <Stage width={400} height={406}>
             <Layer id='1'>
-            <RealImageShenqu url={`male-mage/astronaut/wing.png`}></RealImageShenqu>
-            
-            <RealImageShenqu url={`male-mage/astronaut/body.png`}></RealImageShenqu>
-              <RealImageShenqu url={`male-mage/astronaut/hair.png`}></RealImageShenqu>
-              <RealImageShenqu url={`male-mage/astronaut/weapon.png`}></RealImageShenqu>      
+            <RealImageShenqu url={`${job}/${itemJson.wing}/wing.png`} job={job} isWing={true}></RealImageShenqu>
+            <RealImageShenqu url={`${job}/${itemJson.weapon}/weapon.png`} job={job}></RealImageShenqu>
+              <RealImageShenqu url={`${job}/${itemJson.body}/body.png`} job={job}></RealImageShenqu>
+              <RealImageShenqu url={`${job}/${itemJson.hair}/hair.png`} job={job}></RealImageShenqu>   
           </Layer>
         </Stage>
         <SelectedGenderWp>
-          <SelectFemale onClick={() => {
-            setGender('female')
-          }}>female</SelectFemale>
-          <SelectMale onClick={() => {
-            setGender('male')
-          }}>male</SelectMale>
+            <Select className={'select'} options={options} onChange={(e) => {
+              setJob(e?.value)
+            }} placeholder="male-mage" />
         </SelectedGenderWp>
         <ExportBtn onClick={() => {
           exportCanvasAsPNG('export')
         }}>
           export
         </ExportBtn>
-        <input ref={randomInput} type={'number'}></input>
+        <input ref={randomInputShenqu} type={'number'}></input>
         <button onClick={() => {
-          handleRandom()
+          handleRandomShenqu()
         }}>random</button>
-      </BodyWrapper>
-      <RightWrapper>
+      </ShenquWrapper>
+      <RightWrapper style={{marginLeft:"100px"}}>
         <TabWrapper>
-        {['cloth', 'head', 'face', 'emoji', 'glass', 'hair','cardBg','cardBorder'].map(
+        {['wing', 'weapon', 'body', 'hair'].map(
           (item,idx) => {
             return <Tab onClick={() => {
-             setPart(item)
+             setShenquPart(item)
            }} key={item}>{item}</Tab>
           }
         )}
       </TabWrapper>
-      <ItemList setUserSelected={setUserSelected} gender={gender} part={part} userSelected={userSelected}></ItemList>
-        </RightWrapper>
+      <ItemListShenqu setUserSelected={setItemJson} job={job} part={shenquPart} userSelected={itemJson}></ItemListShenqu>
+      </RightWrapper>
         <RichEditer></RichEditer>
       </AppWrapper>
-    <div style={{display:'flex',width:'100%',flexFlow: 'wrap'}}>
+    <div style={{display:'flex',width:'100%',flexFlow: 'wrap',marginTop:"100px"}}>
         {randomArr?.map((item) =>
           <div style={{ display:'flex',flexDirection:'column'}}>
             <Stage width={250} height={312}>
               <Layer id={item.emoji}>
-                <RealImage url={`cardBg/${item.cardBg}.png`} isCardbg></RealImage>
-                <RealImage url={`cardBorder/${item.cardBorder}.png`} isCardbg></RealImage>
+                {hasBg&&<RealImage url={`cardBg/${item.cardBg}.png`} isCardbg></RealImage>} 
+                {hasBg&&<RealImage url={`cardBorder/${item.cardBorder}.png`} isCardbg></RealImage>}
                 <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
                 
                 <RealImage url={`hair/${gender}/${item.hair}/1/show.png`}></RealImage>
@@ -389,6 +487,38 @@ function App() {
             <div>{`${item.cloth}_${item.face}_${item.glass}_${item.hair}_${item.head}_${item.emoji}|`}</div>
           </div>
         )}
+      </div>
+          <div style={{display:'flex',width:'100%',flexFlow: 'wrap',marginTop:"100px"}}>
+        {randomArr?.map((item) =>
+          <div style={{ display:'flex',flexDirection:'column'}}>
+            <Stage width={400} height={406}>
+              <Layer id={item.emoji}>
+                <RealImage url={`emoji/${gender}/${item.emoji}/1/show.png`}></RealImage>
+                
+                <RealImage url={`hair/${gender}/${item.hair}/1/show.png`}></RealImage>
+                <RealImage url={`cloth/${gender}/${item.cloth}/1/show.png`}></RealImage>
+                <RealImage url={`face/${gender}/${item.face}/1/show.png`}></RealImage>
+                <RealImage url={`glass/${item.glass}/1/show.png`}></RealImage>
+                <RealImage url={`head/${gender}/${item.head}/1/show.png`}></RealImage>
+              </Layer>
+            </Stage>
+            <div>{`${item.cloth}_${item.face}_${item.glass}_${item.hair}_${item.head}_${item.emoji}|`}</div>
+          </div>
+        )}
+        {randomArrShenqu?.map((item,id) =>
+          <div style={{ display:'flex',flexDirection:'column'}}>
+            <Stage width={270} height={312}>
+              <Layer id={item.job+id}>
+                <RealImageShenqu url={`${item.job}/${item.wing}/wing.png`} job={item.job} isWing={true}></RealImageShenqu>
+                <RealImageShenqu url={`${item.job}/${item.weapon}/weapon.png`} job={item.job}></RealImageShenqu>
+                <RealImageShenqu url={`${item.job}/${item.body}/body.png`} job={item.job}></RealImageShenqu>
+                <RealImageShenqu url={`${item.job}/${item.hair}/hair.png`} job={item.job}></RealImageShenqu>   
+              </Layer>
+            </Stage>
+            <div>{`${item.job}_${item.wing}(wing)_${item.weapon}(weapon)_${item.hair}(hair)_${item.body}(body)|`}</div>
+          </div>
+        )}
+        
       </div>
 </div>
   );
