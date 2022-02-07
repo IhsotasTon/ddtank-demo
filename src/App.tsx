@@ -274,9 +274,9 @@ function randomHeros(gender: string, number: number): any[] {
 const RealImageShenqu = function (props:{url:string,isCardbg?:boolean,job:string|undefined,isWing?:boolean}) {
   let [realImg] = useImage(getRealUrl("shenqu/" + props.url), 'anonymous')
   const isWarrior=props.job?.indexOf('warrior')!==-1
-  let width = isWarrior ? 270 : 300;
-  let height = isWarrior ? 406 : 400;
-  let x = isWarrior&&props.isWing ? 55:0;
+  let width = isWarrior ? 350 : 350;
+  let height = isWarrior ? 400 : 400;
+  let x = isWarrior&&props.isWing ? 0:0;
   let y = isWarrior&&props.isWing ? 0 : 0;
   if (!props.job) {
     x=0
@@ -517,7 +517,7 @@ function App() {
         )}
         {randomArrShenqu?.map((item,id) =>
           <div style={{ display:'flex',flexDirection:'column'}}>
-            <Stage width={400} height={400}>
+            <Stage width={350} height={400}>
               <Layer id={item.job+id}>
                 <RealImageShenqu url={`${item.job}/${item.wing}/wing.png`} job={item.job} isWing={true}></RealImageShenqu>
                {item.job!=='male-archer'&&<RealImageShenqu url={`${item.job}/${item.weapon}/weapon.png`} job={item.job}></RealImageShenqu>} 
